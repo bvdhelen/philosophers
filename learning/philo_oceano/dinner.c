@@ -1,5 +1,25 @@
 #include "philo.h"
 
+/*
+ * same algo but...
+ * 
+ * 1) fake to lock the fork
+ * 2) sleep until the monitor will bust it
+*/
+void	*lone_philo(void *arg)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *)arg;
+	wait_all_threads(philo->table);
+	set_long(&philo->philo_mutex, &philo->last_meal_time, gettime(MILLISECOND));
+	increase_long(&philo->table->table_mutex, &philo->table->threads_running_nbr);
+	write_status(TAKE_FIRST_FORK, philo, DEBUG_MODE);
+	while (!simulation_finished(philo->table))
+		usleep(200); //milliseconds
+	return (NULL);
+}
+
 static void	thinking(t_philo *philo)
 {
 	write_status(THINKING, philo, DEBUG_MODE);
@@ -51,6 +71,13 @@ void	*dinner_simulation(void *data)
 
 	// spinlock
 	wait_all_threads(philo->table);
+	
+	// set time last meal
+	set_long(&philo->philo_mutex, &philo->last_meal_time, gettime(MILLISECOND));
+
+	// synchro with monitor
+	// increase a table variable counter, with all threads running
+	increase_long(&philo->table->table_mutex, &philo->table->threads_running_nbr);
 
 	// set last meal time
 	while (!simulation_finished(philo->table))
@@ -60,7 +87,6 @@ void	*dinner_simulation(void *data)
 			break ;
 		// 2) eat
 		eat(philo);
-
 		// 3) sleep -> write_status & precise usleep
 		write_status(SLEEPING, philo, DEBUG_MODE);
 		precise_usleep(philo->table->time_to_sleep, philo->table);
@@ -92,13 +118,17 @@ void	dinner_start(t_table *table)
 	if (table->nbr_limit_meals == 0)
 		return ;
 	else if (table->philo_nbr == 1)
-		; //TODO
+		safe_thread_handle(&table->philos[0].thread_id, lone_philo,
+			&table->philos[0], CREATE);
 	else
 	{
 		while (++i < table->philo_nbr)
-			safe_thread_handle(table->philos[i].thread_id, dinner_simulation,
-				table->philos[i], CREATE);
+			safe_thread_handle(&table->philos[i].thread_id, dinner_simulation,
+				&table->philos[i], CREATE);
 	}
+	// MONITOR (CHECK DEADS)
+	safe_thread_handle(&table->monitor, monitor_dinner, table, CREATE); //TODO
+
 	// start of simulation
 	table->start_simulation = gettime(MILLISECOND);
 	// now all threads are ready!

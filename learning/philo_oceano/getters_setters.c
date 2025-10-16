@@ -35,7 +35,7 @@ long	get_long(t_mtx *mutex, long *value)
 	return (ret);
 }
 
-void	set_bool(t_mtx *mutex, long *dest, long value)
+void	set_long(t_mtx *mutex, long *dest, long value)
 {
 	safe_mutex_handle(mutex, LOCK);
 	*dest = value;
@@ -45,5 +45,5 @@ void	set_bool(t_mtx *mutex, long *dest, long value)
 // Redundant? nah..
 bool	simulation_finished(t_table *table)
 {
-	return (get_bool(table->table_mutex, table->end_simulation));
+	return (get_bool(&table->table_mutex, &table->end_simulation));
 }

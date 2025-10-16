@@ -66,7 +66,7 @@ static long	ft_atol(const char *str)
 void	parse_input(t_table *table, char **argv)
 {
 	table->philo_nbr = ft_atol(argv[1]);
-	table->time_to_die = ft_atol(argv[2]) * 1e3;
+	table->time_to_die = ft_atol(argv[2]) * 1e3; //CONVIRTIENDO A MICROSEGUNDOS
 	table->time_to_eat = ft_atol(argv[3]) * 1e3;
 	table->time_to_sleep = ft_atol(argv[4]) * 1e3;
 	if (table->time_to_die < 6e4

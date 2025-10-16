@@ -16,9 +16,9 @@ int	main(int argc, char **argv)
 		// 2) creating the actual thing
 		data_init(&table);
 		// 3)
-		dinner_start(&table); //TODO
+		dinner_start(&table);
 		// 4) No leaks -> philos full | 1 philo died
-		clean(&table); //TODO
+		//clean(&table); //TODO
 	}
 	else
 	{

@@ -1,12 +1,15 @@
-#include <stdio.h> // printf
-#include <stdlib.h> // malloc, free
-#include <unistd.h> // write, usleep
-#include <stdbool.h>
-#include <pthread.h> //mutex : init destroy lock unlock
+#ifndef PHILO_H
+# define PHILO_H
+
+# include <stdio.h> // printf
+# include <stdlib.h> // malloc, free
+# include <unistd.h> // write, usleep
+# include <stdbool.h>
+# include <pthread.h> //mutex : init destroy lock unlock
 					// threads : create join detach
-#include <sys/time.h> //gettimeofday
-#include <limits.h> //INT_MAX
-#include <errno.h> 
+# include <sys/time.h> //gettimeofday
+# include <limits.h> //INT_MAX
+# include <errno.h> 
 
 /*
 ** ANSI Escape Sequences for Bold Text Colors
@@ -17,18 +20,18 @@
 */
 
 #define RST	"\033[0m"	// Reset to default color
-#define R	"\033[1:31m"	// Bold Red
-#define G	"\033[1:32m"	// Bold Green
-#define Y	"\033[1:33m"	// Bold Yellow
-#define B	"\033[1:34m"	// Bold Blue
-#define M	"\033[1:35m"	// Bold Magenta
-#define C	"\033[1:36m"	// Bold Cyan
-#define W	"\033[1:37m"	// Bold White
+#define R	"\033[1;31m"	// Bold Red
+#define G	"\033[1;32m"	// Bold Green
+#define Y	"\033[1;33m"	// Bold Yellow
+#define B	"\033[1;34m"	// Bold Blue
+#define M	"\033[1;35m"	// Bold Magenta
+#define C	"\033[1;36m"	// Bold Cyan
+#define W	"\033[1;37m"	// Bold White
 
 /*
  * write function macro
 */
-#define DEBUG_MODE 0
+#define DEBUG_MODE 1
 
 /*
  * PHILO STATES
@@ -100,22 +103,24 @@ typedef struct s_philo
 
 /*			TABLE			*/
 /*
-	./philo 5 800 200 200 [5]	
+	./philo 5 800 200 200 [5]
 */
-struct s_table
+typedef struct s_table
 {
-	long	philo_nbr;
-	long	time_to_die;
-	long	time_to_eat;
-	long	time_to_sleep;
-	long	nbr_limit_meals; // [5] | FLAG if -1
-	long	start_simulation; // time start
-	bool	end_simulation; // a philo died or all philos full
-	bool	all_threads_ready; // synchro philos
-	t_mtx	table_mutex; // avoid races while reading from table
-	t_mtx	write_mutex;
-	t_fork	*forks; // array forks
-	t_philo	*philos; // array philos
+	long		philo_nbr;
+	long		time_to_die;
+	long		time_to_eat;
+	long		time_to_sleep;
+	long		nbr_limit_meals; // [5] | FLAG if -1
+	long		start_simulation; // time start
+	bool		end_simulation; // a philo died or all philos full
+	bool		all_threads_ready; // synchro philos
+	long		threads_running_nbr;
+	pthread_t	monitor;
+	t_mtx		table_mutex; // avoid races while reading from table
+	t_mtx		write_mutex;
+	t_fork		*forks; // array forks
+	t_philo		*philos; // array philos
 }	t_table;
 
 // *** PROTOTYPES ***
@@ -140,10 +145,21 @@ void	safe_thread_handle(pthread_t *thread, void *(*foo)(void *), void *data, t_o
 
 // ** synchro utils **
 void	wait_all_threads(t_table *table);
+bool	all_threads_running(t_mtx *mutex, long *threads, long philo_nbr);
+void	increase_long(t_mtx *mutex, long *value);
 
 // ** setters and getters, very useful to write DRY code **
 void	set_bool(t_mtx *mutex, bool *dest, bool value);
 bool	get_bool(t_mtx *mutex, bool *value);
 long	get_long(t_mtx *mutex, long *value);
-void	set_bool(t_mtx *mutex, long *dest, long value);
+void	set_long(t_mtx *mutex, long *dest, long value);
 bool	simulation_finished(t_table *table);
+
+// ** dinner **
+void	*dinner_simulation(void *data);
+void	dinner_start(t_table *table);
+
+// ** monitoring **
+void	*monitor_dinner(void *data);
+
+#endif
