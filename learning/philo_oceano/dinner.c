@@ -1,5 +1,26 @@
 #include "philo.h"
 
+void	thinking(t_philo *philo, bool pre_simulation)
+{
+	long	t_eat;
+	long	t_sleep;
+	long	t_think;
+
+	if (!pre_simulation)
+		write_status(THINKING, philo, DEBUG_MODE);
+	// if the system is even, we don't care, system already fair
+	if (philo->table->philo_nbr % 2 == 0)
+		return ;
+	// odd, NOT ALWAYS FAIR
+	t_eat = philo->table->time_to_eat;
+	t_sleep = philo->table->time_to_sleep;
+	t_think = t_eat * 2 - t_sleep; // available time to think
+	if (t_think < 0)
+		t_think = 0;
+	// precise control i wanna make on philo
+	precise_usleep(t_think * 0.5, philo->table);
+}
+
 /*
  * same algo but...
  * 
@@ -18,11 +39,6 @@ void	*lone_philo(void *arg)
 	while (!simulation_finished(philo->table))
 		usleep(200); //milliseconds
 	return (NULL);
-}
-
-static void	thinking(t_philo *philo)
-{
-	write_status(THINKING, philo, DEBUG_MODE);
 }
 
 /*
@@ -79,7 +95,9 @@ void	*dinner_simulation(void *data)
 	// increase a table variable counter, with all threads running
 	increase_long(&philo->table->table_mutex, &philo->table->threads_running_nbr);
 
-	// set last meal time
+	// desynchronizing philos
+	de_synchronize_philos(philo);
+
 	while (!simulation_finished(philo->table))
 	{
 		// 1) am i full?
@@ -91,7 +109,7 @@ void	*dinner_simulation(void *data)
 		write_status(SLEEPING, philo, DEBUG_MODE);
 		precise_usleep(philo->table->time_to_sleep, philo->table);
 		// 4) think
-		thinking(philo); //TODO
+		thinking(philo, false);
 	}
 	return (NULL);
 }
@@ -127,15 +145,19 @@ void	dinner_start(t_table *table)
 				&table->philos[i], CREATE);
 	}
 	// MONITOR (CHECK DEADS)
-	safe_thread_handle(&table->monitor, monitor_dinner, table, CREATE); //TODO
+	safe_thread_handle(&table->monitor, monitor_dinner, table, CREATE);
 
 	// start of simulation
 	table->start_simulation = gettime(MILLISECOND);
+
 	// now all threads are ready!
 	set_bool(&table->table_mutex, &table->all_threads_ready, true);
+	
 	// Wait for everyone
 	i = -1;
 	while (++i < table->philo_nbr)
 		safe_thread_handle(&table->philos[i].thread_id, NULL, NULL, JOIN);
 	// If we manage to reach this line, all philos are FULL!
+	set_bool(&table->table_mutex, &table->end_simulation, true);
+	safe_thread_handle(&table->monitor, NULL, NULL, JOIN);
 }

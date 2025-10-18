@@ -126,9 +126,10 @@ typedef struct s_table
 // *** PROTOTYPES ***
 
 // ** utils **
-void	error_exit(const char *error);
 long	gettime(t_time_code time_code);
 void	precise_usleep(long usec, t_table *table);
+void	clean(t_table *table);
+void	error_exit(const char *error);
 
 void	write_status(t_philo_status status, t_philo *philo, bool debug);
 
@@ -158,6 +159,10 @@ bool	simulation_finished(t_table *table);
 // ** dinner **
 void	*dinner_simulation(void *data);
 void	dinner_start(t_table *table);
+
+// ** fairness **
+void	thinking(t_philo *philo, bool pre_simulation);
+void	de_synchronize_philos(t_philo *philo);
 
 // ** monitoring **
 void	*monitor_dinner(void *data);

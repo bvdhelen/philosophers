@@ -14,6 +14,7 @@ static bool	philo_died(t_philo *philo)
 	if (get_bool(&philo->philo_mutex, &philo->full))
 		return (false);
 	elapsed = gettime(MILLISECOND) - get_long(&philo->philo_mutex, &philo->last_meal_time);
+	// convert back to milliseconds
 	t_to_die = philo->table->time_to_die / 1e3; // DE MICROSEGUNDOS A MILISEGUNDOS
 	if (elapsed > t_to_die) // IMPORTANTE: dice que t_to_die has to be converted back to milliseconds
 		return (true);
