@@ -31,7 +31,8 @@ RESET = \033[0m
 
 # Archivos fuente y archivos objeto
 SRC =	philo.c \
-		utils.c \
+		error.c \
+		parsing.c \
 
 OBJ = $(SRC:.c=.o)
 

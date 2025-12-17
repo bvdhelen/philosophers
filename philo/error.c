@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-void	ft_putstr_fd(char *s, int fd)
+static void	ft_putstr_fd(char *s, int fd)
 {
 	int	i;
 
@@ -25,7 +25,7 @@ void	ft_putstr_fd(char *s, int fd)
 		i++;
 	}
 }
- 
+
 /*Función error de argumentos*/
 int	arg_error(void)
 {
@@ -43,37 +43,26 @@ int	ft_error(char *message)
 	return (1);
 }
 
-int	ft_isnumber(char *str)
+/*Función de error oceano*/
+void	error_exit(char *error)
 {
-	char	c;
-	int		i;
-
-	i = 0;
-	if (!str || !str[0])
-		return (0);
-	while (str[i])
-	{
-		c = str[i];
-		if (c >= '0' && c <= '9')
-			return (1);
-		i++;
-	}
-	return (0);
+	ft_putstr_fd("\033[31mError: \n\033[0m", 2);
+	ft_putstr_fd(error, 2);
+	exit(EXIT_FAILURE);
 }
 
-long	ft_atol(const char *str)
+int	main(int argc, char **argv)
 {
-	int		i;
-	long	result;
+	t_data	data;
 
-	i = 0;
-	result = 0;
-	while (str[i])
-	{
-		result = result * 10 + str[i] - '0';
-		if (result > 2147483647)
-			return (-1);
-		i++;
-	}
-	return (result);
+	if (argc != 5 && argc != 6)
+		return (arg_error());
+	if (parse_args(&data, argv))
+		return (1);
+	printf("Philos: %d\n", data.number_of_philos);
+	printf("Die: %d\n", data.time_to_die);
+	printf("Eat: %d\n", data.time_to_eat);
+	printf("Sleep: %d\n", data.time_to_sleep);
+	printf("Must eat: %d\n", data.must_eat);
+	return (0);
 }

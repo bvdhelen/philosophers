@@ -16,6 +16,7 @@
 # include <unistd.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <limits.h>
 
 typedef struct s_data
 {
@@ -26,14 +27,12 @@ typedef struct s_data
 	int	must_eat;
 }	t_data;
 
-int	parse_args(int argc, char **argv, t_data *data);
+int		main(int argc, char **argv);
 
-long	ft_atol(const char *str);
-int		ft_isnumber(char *str);
-int		ft_error(char *message);
+int		parse_args(t_data *data, char **argv);
+
 int		arg_error(void);
-void	ft_putstr_fd(char *s, int fd);
-
-int	main(int argc, char **argv);
+int		ft_error(char *message);
+void	error_exit(char *error);
 
 #endif
