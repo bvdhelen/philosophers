@@ -30,7 +30,7 @@ GREY = \033[0;90m
 RESET = \033[0m
 
 # Archivos fuente y archivos objeto
-SRC =	philo.c \
+SRC =	main.c \
 		error.c \
 		parsing.c \
 

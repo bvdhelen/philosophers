@@ -112,6 +112,7 @@ typedef struct s_table
 	long		time_to_eat;
 	long		time_to_sleep;
 	long		nbr_limit_meals; // [5] | FLAG if -1
+	
 	long		start_simulation; // time start
 	bool		end_simulation; // a philo died or all philos full
 	bool		all_threads_ready; // synchro philos

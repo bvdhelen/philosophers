@@ -44,26 +44,6 @@ static int	ft_isspace(char c)
 		|| c == '\v' || c == '\f' || c == '\r');
 }
 
-static char	*valid_input(char *str)
-{
-	int		i;
-	char	*number;
-
-	i = 0;
-	if (!str || !str[0])
-		return (NULL);
-	while (ft_isspace(str[i]))
-		i++;
-	if (str[i] == '+')
-		i++;
-	else if (str[i] == '-')
-		error_exit("Arguments must be positive integers\n");
-	if (!ft_isdigit(str[i]))
-		error_exit("The input is not a correct digit\n");
-	number = str + i;
-	return (number);
-}
-
 static long	ft_atol(char *str)
 {
 	int		i;
@@ -71,38 +51,47 @@ static long	ft_atol(char *str)
 
 	i = 0;
 	num = 0;
-	str = valid_input(str);
 	if (!str || !str[0])
-		return (-1);
+		ft_error_exit("The input is not a correct digit\n");
+	while (ft_isspace(str[i]))
+		i++;
+	if (str[i] == '-')
+		ft_error_exit("Arguments must be positive integers\n");
+	if (str[i] == '+')
+		i++;
+	if (!ft_isdigit(str[i]))
+		ft_error_exit("The input is not a correct digit\n");
 	while (ft_isdigit(str[i]))
 	{
 		num = num * 10 + str[i] - '0';
 		if (num > 2147483647)
-			error_exit("The value is too big, INT_MAX is the limit\n");
+			ft_error_exit("The value is too big, INT_MAX is the limit\n");
 		i++;
 	}
+	if (str[i] != '\0')
+		ft_error_exit("The input is not a correct digit\n");
 	return (num);
 }
 
+//LOS ARGUMENTOS ESTÁN EN MILLISECONDS
 int	parse_args(t_data *data, char **argv)
 {
 	data->number_of_philos = ft_atol(argv[1]);
-	//MILLISECONDS
 	if (data->number_of_philos == 0)
-		error_exit("Number of philosophers must be greater than 0\n");
+		ft_error_exit("Number of philosophers must be greater than 0\n");
 	data->time_to_die = ft_atol(argv[2]);
 	data->time_to_eat = ft_atol(argv[3]);
 	data->time_to_sleep = ft_atol(argv[4]);
 	if (data->time_to_die < 60
 		|| data->time_to_eat < 60
 		|| data->time_to_sleep < 60)
-		error_exit("Use timestamps major than 60ms\n");
-	data->must_eat = -1;
+		ft_error_exit("Use timestamps major than 60ms\n");
+	data->limit_meals = -1;
 	if (argv[5])
 	{
-		data->must_eat = ft_atol(argv[5]);
-		//if (data->must_eat == 0)
-		//	return (ft_error("Number of meals must be greater than 0\n"));
+		data->limit_meals = ft_atol(argv[5]);
+		if (data->limit_meals == 0)
+			ft_error_exit("Number of limit meals must be greater than 0\n");
 	}
 	return (0);
 }
