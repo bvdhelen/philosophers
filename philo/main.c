@@ -26,8 +26,8 @@ int	main(int argc, char **argv)
 	{
 		parse_args(&data, argv);
 		data_init(&data);
-		//dinner_start(&data);
-		//clean(&data);
+		dinner_start(&data);
+		clean(&data);
 	}
 	return (0);
 }

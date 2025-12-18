@@ -15,7 +15,8 @@ NAME = philo
 
 # Compilador y banderas de compilación
 CC = cc
-FLAGS = -Wall -Werror -Wextra
+FLAGS = -Wall -Werror -Wextra -fsanitize=address -g
+SANITIZE = -fsanitize=address -g
 
 # Definir códigos de color
 BLACK = \033[0;30m
@@ -31,8 +32,16 @@ RESET = \033[0m
 
 # Archivos fuente y archivos objeto
 SRC =	main.c \
+		init.c \
+		utils.c \
+		write.c \
 		error.c \
+		dinner.c \
 		parsing.c \
+		monitoring.c \
+		synchro_utils.c \
+		safe_functions.c \
+		getters_setters.c \
 
 OBJ = $(SRC:.c=.o)
 

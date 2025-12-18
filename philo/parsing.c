@@ -73,18 +73,19 @@ static long	ft_atol(char *str)
 	return (num);
 }
 
-//LOS ARGUMENTOS ESTÁN EN MILLISECONDS
+// THE ARGUMENTS ARE IN MILLISECONDS
+// But USLEEP wants MICROSECONS
 int	parse_args(t_data *data, char **argv)
 {
 	data->number_of_philos = ft_atol(argv[1]);
 	if (data->number_of_philos == 0)
 		ft_error_exit("Number of philosophers must be greater than 0\n");
-	data->time_to_die = ft_atol(argv[2]);
-	data->time_to_eat = ft_atol(argv[3]);
-	data->time_to_sleep = ft_atol(argv[4]);
-	if (data->time_to_die < 60
-		|| data->time_to_eat < 60
-		|| data->time_to_sleep < 60)
+	data->time_to_die = ft_atol(argv[2]) * 1e3;
+	data->time_to_eat = ft_atol(argv[3]) * 1e3;
+	data->time_to_sleep = ft_atol(argv[4]) * 1e3;
+	if (data->time_to_die < 60e3
+		|| data->time_to_eat < 60e3
+		|| data->time_to_sleep < 60e3)
 		ft_error_exit("Use timestamps major than 60ms\n");
 	data->limit_meals = -1;
 	if (argv[5])
