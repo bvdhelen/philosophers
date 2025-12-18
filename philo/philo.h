@@ -32,7 +32,7 @@
 # define C		"\033[1;36m"
 # define W		"\033[1;37m"
 
-# define DEBUG_MODE 1
+# define DEBUG_MODE 0
 
 typedef enum e_status
 {

@@ -15,7 +15,7 @@ NAME = philo
 
 # Compilador y banderas de compilación
 CC = cc
-FLAGS = -Wall -Werror -Wextra -fsanitize=address -g
+FLAGS = -Wall -Werror -Wextra
 SANITIZE = -fsanitize=address -g
 
 # Definir códigos de color
