@@ -14,7 +14,8 @@
 
 void		*safe_malloc(size_t bytes);
 void		safe_mutex_handle(pthread_mutex_t *mutex, t_opcode opcode);
-void		safe_thread_handle(pthread_t *thread, void *(*foo)(void *), void *data, t_opcode opcode);
+void		safe_thread_handle(pthread_t *thread, void *(*foo)(void *),
+				void *data, t_opcode opcode);
 static void	handle_mutex_error(int status, t_opcode opcode);
 static void	handle_thread_error(int status, t_opcode opcode);
 
@@ -32,16 +33,19 @@ static void	handle_mutex_error(int status, t_opcode opcode)
 {
 	if (status == 0)
 		return ;
-	if (status == EINVAL && (opcode == LOCK || opcode == UNLOCK || opcode == DESTROY))
+	if (status == EINVAL
+		&& (opcode == LOCK || opcode == UNLOCK || opcode == DESTROY))
 		ft_error_exit("The value specified by mutex is invalid.\n");
 	else if (status == EINVAL && opcode == INIT)
 		ft_error_exit("The value specified by attr is invalid.\n");
 	else if (status == EDEADLK)
-		ft_error_exit("A deadlock would occur if the thread blocked waiting for mutex.\n");
+		ft_error_exit("A deadlock would occur"
+			"if the thread blocked waiting for mutex.\n");
 	else if (status == EPERM)
 		ft_error_exit("The current thread does not hold a lock on mutex.\n");
 	else if (status == ENOMEM)
-		ft_error_exit("The process cannnot allocate enough memory to create another mutex.\n");
+		ft_error_exit("The process cannnot allocate enough memory"
+			"to create another mutex.\n");
 	else if (status == EBUSY)
 		ft_error_exit("Mutex is locked\n");
 }
@@ -80,7 +84,8 @@ static void	handle_thread_error(int status, t_opcode opcode)
 			"thread specifies the calling thread.\n");
 }
 
-void	safe_thread_handle(pthread_t *thread, void *(*foo)(void *), void *data, t_opcode opcode)
+void	safe_thread_handle(pthread_t *thread, void *(*foo)(void *),
+			void *data, t_opcode opcode)
 {
 	if (opcode == CREATE)
 		handle_thread_error(pthread_create(thread, NULL, foo, data), opcode);

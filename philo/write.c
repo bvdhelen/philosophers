@@ -12,16 +12,18 @@
 
 #include "philo.h"
 
-static void	write_status_debug(t_philo_status status, t_philo *philo, long elapsed)
+static void	write_status_debug(t_philo_status status,
+	t_philo *philo, long elapsed)
 {
 	if (TAKE_FIRST_FORK == status && !simulation_finished(philo->data))
-		printf(W "%6ld" RST " %d has taken the 1° fork \t" B "[ %d ]\n" RST, elapsed, philo->id,
-			philo->first_fork->fork_id);
+		printf(W "%6ld" RST " %d has taken the 1° fork \t" B "[ %d ]\n" RST,
+			elapsed, philo->id, philo->first_fork->fork_id);
 	else if (TAKE_SECOND_FORK == status && !simulation_finished(philo->data))
-		printf(W "%6ld" RST " %d has taken the 2° fork \t" B "[ %d ]\n" RST, elapsed, philo->id,
-			philo->second_fork->fork_id);
+		printf(W "%6ld" RST " %d has taken the 2° fork \t" B "[ %d ]\n" RST,
+			elapsed, philo->id, philo->second_fork->fork_id);
 	else if (EATING == status && !simulation_finished(philo->data))
-		printf(W "%6ld" M " %d is eating \t %ld\n" RST, elapsed, philo->id, philo->meals);
+		printf(W "%6ld" M " %d is eating \t %ld\n" RST,
+			elapsed, philo->id, philo->meals);
 	else if (SLEEPING == status && !simulation_finished(philo->data))
 		printf(W "%6ld" C " %d is sleeping\n", elapsed, philo->id);
 	else if (THINKING == status && !simulation_finished(philo->data))

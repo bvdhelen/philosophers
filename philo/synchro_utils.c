@@ -27,7 +27,8 @@ void	increase_long(pthread_mutex_t *mutex, long *value)
 }
 
 //  Monitor busy waits until all threads are running
-bool	all_threads_running(pthread_mutex_t *mutex, long *threads, long number_of_philos)
+bool	all_threads_running(pthread_mutex_t *mutex,
+	long *threads, long number_of_philos)
 {
 	bool	result;
 

@@ -118,7 +118,8 @@ void	data_init(t_data *data);
 
 void	*safe_malloc(size_t bytes);
 void	safe_mutex_handle(pthread_mutex_t *mutex, t_opcode opcode);
-void	safe_thread_handle(pthread_t *thread, void *(*foo)(void *), void *data, t_opcode opcode);
+void	safe_thread_handle(pthread_t *thread, void *(*foo)(void *),
+			void *data, t_opcode opcode);
 
 void	set_bool(pthread_mutex_t *mutex, bool *dest, bool value);
 bool	get_bool(pthread_mutex_t *mutex, bool *value);
@@ -128,7 +129,8 @@ bool	simulation_finished(t_data *data);
 
 void	wait_all_threads(t_data *data);
 void	increase_long(pthread_mutex_t *mutex, long *value);
-bool	all_threads_running(pthread_mutex_t *mutex, long *threads, long number_of_philos);
+bool	all_threads_running(pthread_mutex_t *mutex,
+			long *threads, long number_of_philos);
 void	de_synchronize_philos(t_philo *philo);
 
 long	gettime(t_time_code time_code);
@@ -145,6 +147,5 @@ void	*dinner_simulation(void *data);
 void	dinner_start(t_data *data);
 
 void	*monitor_dinner(void *data);
-
 
 #endif
